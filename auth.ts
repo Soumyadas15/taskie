@@ -3,6 +3,7 @@ import authConfig from "@/auth.config"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "@/lib/db"
 import { getUserById } from "@/data/user"
+import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation"
 
 export const { 
     auth, 
@@ -35,6 +36,18 @@ export const {
             
             if(!existingUser?.emailVerified) return false;
 
+            if(existingUser.isTwoFactorEnabled) {
+                const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+
+                if(!twoFactorConfirmation) return false;
+
+                await db.twoFactorConfirmation.delete({
+                    where: {
+                        id: twoFactorConfirmation.id
+                    }
+                })
+            }
+
             return true;
         },
         async session({ token, session }) {
@@ -44,6 +57,10 @@ export const {
 
             if (session.user) {
                 session.user.name = token.name;
+                //@ts-ignore
+                session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+                //@ts-ignore
+                session.user.isTwoFactorPopupShown = token.isTwoFactorPopupShown;
             }
 
             return session;
@@ -58,7 +75,10 @@ export const {
 
             token.name = existingUser.name;
             token.email = existingUser.email;
+            token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+            token.isTwoFactorPopupShown = existingUser.isTwoFactorPopupShown;
 
+            
             return token;
         }
     },

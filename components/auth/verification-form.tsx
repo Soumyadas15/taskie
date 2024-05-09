@@ -61,7 +61,7 @@ export const VerificationForm = () => {
     }
     return (
         <CardWrapper
-            headerLabel="Verifiy your OTP"
+            headerLabel="Enter the verification sent to your email"
             backButtonLabel=""
             backButtonHref=""
         >

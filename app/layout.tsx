@@ -5,6 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { auth } from "@/auth";
+import { ModalProvider } from "@/providers/modal-provider";
+import { currentUser } from "@/lib/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +22,7 @@ export default async function RootLayout({
 }>) {
 
   const session = await auth();
+  const user = await currentUser();
 
   return (
     <html lang="en">
@@ -30,7 +33,10 @@ export default async function RootLayout({
             attribute="class"
             defaultTheme="dark"
           >
-            
+            <ModalProvider 
+              //@ts-ignore
+              currentUser={user}
+            />
             {children}
           </ThemeProvider>
         </SessionProvider>

@@ -12,7 +12,7 @@ const AuthLayout = ({
                   <div className="bg-[#040d21] overflow-hidden w-[60%] lg:block hidden">
                       <div className="flex items-center justify-center overflow-hidden h-full">
                           <Image
-                              src={'/background.jpg'}
+                              src='/images/background.jpg'
                               alt="background"
                               layout="fill"
                               objectFit="cover"
